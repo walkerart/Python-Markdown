@@ -4,8 +4,30 @@ import markdown
 import codecs
 import difflib
 import nose
-from . import util 
-from .plugins import HtmlOutput, Markdown
+
+import sys
+if sys.version_info[0] == 3:
+    from configparser import SafeConfigParser
+else:
+    from ConfigParser import SafeConfigParser
+
+class MarkdownSyntaxError(Exception):
+    pass
+
+
+class CustomConfigParser(SafeConfigParser):
+    def get(self, section, option):
+        value = SafeConfigParser.get(self, section, option)
+        if option == 'extensions':
+            if len(value.strip()):
+                return value.split(',')
+            else:
+                return []
+        if value.lower() in ['yes', 'true', 'on', '1']:
+            return True
+        if value.lower() in ['no', 'false', 'off', '0']:
+            return False
+        return value
 try:
     import tidy
 except ImportError:
@@ -29,7 +51,7 @@ def relpath(path, start=test_dir):
 
 def get_config(dir_name):
     """ Get config for given directory name. """
-    config = util.CustomConfigParser({'normalize': '0',
+    config = CustomConfigParser({'normalize': '0',
                                       'skip': '0',
                                       'input_ext': '.txt',
                                       'output_ext': '.html'})
@@ -101,7 +123,7 @@ class CheckSyntax(object):
                                                 'actual_output.html', 
                                                 n=3)]
         if diff:
-            raise util.MarkdownSyntaxError('Output from "%s" failed to match expected '
+            raise MarkdownSyntaxError('Output from "%s" failed to match expected '
                                            'output.\n\n%s' % (input_file, ''.join(diff)))
 
 def TestSyntax():
