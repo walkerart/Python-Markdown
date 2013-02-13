@@ -37,17 +37,16 @@ class FootnoteExtension(markdown.Extension):
 
     def __init__ (self, configs):
         """ Setup configs. """
-        self.config = {'PLACE_MARKER':
-                       ["///Footnotes Go Here///",
-                        "The text string that marks where the footnotes go"],
-                       'UNIQUE_IDS':
-                       [False,
-                        "Avoid name collisions across "
-                        "multiple calls to reset()."],
-                       "BACKLINK_TEXT":
-                       ["&#8617;",
-                        "The text string that links from the footnote to the reader's place."]
-                       }
+        self.config = {'PLACE_MARKER':   ["///Footnotes Go Here///",
+                                          "The text string that marks "
+                                          "where the footnotes go"],
+                       'UNIQUE_IDS':     [False,
+                                          "Avoid name collisions across "
+                                          "multiple calls to reset()."],
+                       "BACKLINK_TEXT":  ["&#8617;",
+                                          "The text string that links from the "
+                                          "footnote to the reader's place."],
+        }
 
         for key, value in configs:
             self.config[key][0] = value
