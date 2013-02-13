@@ -46,6 +46,12 @@ class FootnoteExtension(markdown.Extension):
                        "BACKLINK_TEXT":  ["&#8617;",
                                           "The text string that links from the "
                                           "footnote to the reader's place."],
+                       "WRAPPER_CLASS":  ["footnote",
+                                          "The class on the wrapper div on the "
+                                          "bottom of the output."],
+                       "USE_HR":         [True,
+                                          "Create a <hr/> element as the first "
+                                          "child of the wrappper div. "],
         }
 
         for key, value in configs:
@@ -126,8 +132,8 @@ class FootnoteExtension(markdown.Extension):
             return None
 
         div = etree.Element("div")
-        div.set('class', 'footnote')
-        etree.SubElement(div, "hr")
+        div.set('class', self.getConfig('WRAPPER_CLASS'))
+        etree.SubElement(div, "hr") if self.getConfig('USE_HR') else None
         ol = etree.SubElement(div, "ol")
 
         for id in self.footnotes.keys():
